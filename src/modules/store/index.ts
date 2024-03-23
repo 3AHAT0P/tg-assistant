@@ -1,1 +1,1 @@
-export { provider as onlineMeetingStoreProvider } from './onlineMeetingStoreProvider';
+export { provider as onlineMeetingStoreProvider } from './OnlineMeetingRecord/provider';

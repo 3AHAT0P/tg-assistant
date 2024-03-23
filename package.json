@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "date-fns": "^3.5.0",
     "grammy": "^1.21.1",
     "luxon": "^3.4.4",
     "typescript": "^5.4.2"

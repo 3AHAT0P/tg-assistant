@@ -2,9 +2,8 @@ import { DateTime } from 'luxon';
 
 import { inject } from '#lib/DI';
 import { configInjectionToken } from '#module/config';
-import { onlineMeetingStoreInjectionToken } from '#module/store/onlineMeetingStoreProvider';
 import { notifyUserAboutMeeting } from '#module/transport-telegram';
-
+import { onlineMeetingStoreInjectionToken, getDateFromRecord } from '#module/store/OnlineMeetingRecord';
 
 // функция гопник
 export const checker = async (): Promise<void> => {
@@ -12,7 +11,7 @@ export const checker = async (): Promise<void> => {
   const config = inject(configInjectionToken);
 
   for (const record of await onlineMeetingStore.getAllRecords()) {
-    let plannedDate!: DateTime;
+    let plannedDate: DateTime = getDateFromRecord(record);
 
     if ('date' in record.schedule) {
       const { year, month, day, hour, minute } = record.schedule.date;

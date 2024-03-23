@@ -1,5 +1,5 @@
 import { inject } from '#lib/DI';
-import type { OnlineMeetingRecord } from '#module/store/@types/OnlineMeetingRecord';
+import type { OnlineMeetingRecord } from '#module/store/OnlineMeetingRecord';
 import { DateTime, Duration } from 'luxon';
 
 import { tgBotInjectionToken, provider } from './provider';

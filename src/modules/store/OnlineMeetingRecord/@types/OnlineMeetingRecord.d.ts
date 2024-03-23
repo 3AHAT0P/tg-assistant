@@ -1,4 +1,4 @@
-import type { ScheduleWeekDayRecord, ScheduleDateRecord } from './ScheduleRecord';
+import type { ScheduleWeekDayRecord, ScheduleDateRecord } from '../../@types/ScheduleRecord';
 
 export interface OnlineMeetingRecord {
   id: string;

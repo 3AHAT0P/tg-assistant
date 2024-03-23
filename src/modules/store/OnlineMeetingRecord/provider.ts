@@ -1,8 +1,9 @@
 import { InjectionToken, provide } from '#lib/DI';
-import { OnlineMeetingRecord } from './@types/OnlineMeetingRecord';
-import { Store } from './@types/Store';
 
-import { init } from './onlineMeetingRecordStore';
+import { Store } from '../@types/Store';
+
+import { OnlineMeetingRecord } from './@types/OnlineMeetingRecord';
+import { init } from './store';
 
 export const onlineMeetingStoreInjectionToken: InjectionToken<Store<OnlineMeetingRecord>> = {
   id: Symbol('OnlineMeetingRecordStore'),

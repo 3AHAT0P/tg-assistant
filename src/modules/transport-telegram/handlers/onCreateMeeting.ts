@@ -2,10 +2,15 @@ import { CommandContext, Context } from 'grammy';
 import { DateTime } from 'luxon';
 
 import { inject } from '#lib/DI';
-import type { OnlineMeetingRecord } from '#module/store/@types/OnlineMeetingRecord';
-import { onlineMeetingStoreInjectionToken } from '#module/store/onlineMeetingStoreProvider';
-import { isHours, isMinutes, isMonthDayIndex, isMonthIndex, isNullOrUndefined, isWeekDayIndex, isWeekIndex, tryToNumberOrDefault, validateNumberOrDefault } from '#utils';
-import { buildRecord as buildOnlineMeetingRecord } from '#module/store/onlineMeetingRecordStore';
+import {
+  type OnlineMeetingRecord,
+  onlineMeetingStoreInjectionToken,
+  buildOnlineMeetingRecord,
+} from '#module/store/OnlineMeetingRecord';
+import {
+  isHours, isMinutes, isMonthDayIndex, isMonthIndex, isNullOrUndefined, isWeekDayIndex, isWeekIndex,
+  tryToNumberOrDefault, validateNumberOrDefault,
+} from '#utils';
 
 import type { TGBot } from '../@types';
 

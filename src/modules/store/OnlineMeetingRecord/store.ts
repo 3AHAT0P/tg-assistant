@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -6,8 +5,8 @@ import type { ValueOf } from '#utils/@types';
 import { isNullOrUndefined } from '#utils';
 
 import type { OnlineMeetingRecord } from './@types/OnlineMeetingRecord';
-import type { Store } from './@types/Store';
-import { saveResult } from './saveResult';
+import type { Store } from '../@types/Store';
+import { saveResult } from '../saveResult';
 
 const storeFilePath = path.join(process.cwd(), 'data', 'OnlineMeetingStore.data.json');
 
@@ -58,15 +57,6 @@ const saveStoreToDisk = async (
   store: OnlineMeetingStore,
 ): Promise<void> => {
   await writeFile(storeFilePath, JSON.stringify(Array.from(store.entries()), null, 2));
-};
-
-export const buildRecord = (data: Omit<OnlineMeetingRecord, 'id' | 'createdAt' | 'updatedAt'>): OnlineMeetingRecord => {
-  return {
-    ...data,
-    id: randomUUID(),
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
 };
 
 export const init = async (): Promise<Store<OnlineMeetingRecord>> => {
