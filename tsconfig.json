@@ -1,0 +1,30 @@
+{
+  "extends": [
+    "@tsconfig/recommended/tsconfig",
+    "@tsconfig/strictest/tsconfig",
+    "@tsconfig/node21/tsconfig.json"
+  ],
+  "compilerOptions": {
+    "types": [
+      "node"
+    ],
+    "baseUrl": "./",
+    "preserveConstEnums": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "#utils": ["src/utils/index"],
+      "#utils/*": ["src/utils/*"],
+      "#lib/*": ["lib/*"],
+      "#module/*": ["./src/modules/*"]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "**/*.spec.ts",
+    "node_modules",
+    "data/*"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "tg-assistent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx watch --env-file=.env --ignore=./data/* ./src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^3.5.0",
+    "grammy": "^1.21.1",
+    "luxon": "^3.4.4",
+    "typescript": "^5.4.2"
+  },
+  "devDependencies": {
+    "@tsconfig/node21": "^21.0.1",
+    "@tsconfig/recommended": "^1.0.3",
+    "@tsconfig/strictest": "^2.0.2",
+    "@types/luxon": "^3.4.2",
+    "@types/node": "^20.11.5",
+    "@types/pg": "^8.10.9",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
+    "tsx": "^4.7.0"
+  }
+}
