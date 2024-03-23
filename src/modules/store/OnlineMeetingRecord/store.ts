@@ -44,6 +44,16 @@ const saveRecordById = async (
   return Promise.resolve(saveResult.updated);
 };
 
+const deleteRecordById = async (
+  store: OnlineMeetingStore,
+  id: OnlineMeetingRecord['id'],
+): Promise<void> => {
+  if (!store.has(id)) return Promise.resolve();
+  store.delete(id);
+
+  await saveStoreToDisk(store);
+};
+
 const readStoreFromDisk = async (
   store: OnlineMeetingStore,
 ): Promise<void> => {
@@ -68,6 +78,7 @@ export const init = async (): Promise<Store<OnlineMeetingRecord>> => {
     getAllRecords: getAllRecord.bind(null, onlineMeetingStore),
     getRecordById: getRecordById.bind(null, onlineMeetingStore),
     saveRecordById: saveRecordById.bind(null, onlineMeetingStore),
+    deleteRecordById: deleteRecordById.bind(null, onlineMeetingStore),
     saveStoreToDisk: saveStoreToDisk.bind(null, onlineMeetingStore),
     readStoreFromDisk: saveStoreToDisk.bind(null, onlineMeetingStore),
   };

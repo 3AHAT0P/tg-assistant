@@ -3,6 +3,7 @@ import type { OnlineMeetingRecord } from '#module/store/OnlineMeetingRecord';
 import { DateTime, Duration } from 'luxon';
 
 import { tgBotInjectionToken, provider } from './provider';
+import { configInjectionToken } from '#module/config';
 
 type NotifyUserAboutMeetingData = Pick<OnlineMeetingRecord, 'name' | 'link' | 'userId'> & {
   deltaTime: Duration;
@@ -18,17 +19,17 @@ export const sendMarkdownToUser = async (userChatId: string, message: string): P
   );
 };
 
-// @TODO(ikos): Zone and locale move to user settings
-const userZone = 'Europe/Moscow';
-const userLocale = 'ru-RU';
-
 // @TODO(ikos): Возможно нужно перенести в другое место
 export const notifyUserAboutMeeting = async (data: NotifyUserAboutMeetingData) => {
+  const config = inject(configInjectionToken);
   const deltaTimeText = Duration
-    .fromObject({ minutes: Math.round(data.deltaTime.as('minutes')) }, { locale: userLocale })
+    .fromObject({ minutes: Math.round(data.deltaTime.as('minutes')) }, { locale: config.defaultLocale })
     .toHuman();
 
-  const timeString = data.plannedDate.setZone(userZone).toFormat('HH:mm', { locale: userLocale });
+  const timeString = data.plannedDate
+    .setZone(config.defaultTimezone)
+    .toFormat('HH:mm', { locale: config.defaultLocale });
+
   await sendMarkdownToUser(
     data.userId,
     `Созвон через ${deltaTimeText} в ${timeString}\\.\n[${data.name}](${data.link})`
