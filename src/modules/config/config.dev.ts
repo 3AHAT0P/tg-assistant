@@ -9,4 +9,11 @@ export const config: Config = <const>{
   scheduleRunDelay: 5 * 60 * 1000, // 5 minutes,
   defaultTimezone: 'Europe/Moscow',
   defaultLocale: 'ru-RU',
+  postgres: {
+    host: 'localhost',
+    port: 5432,
+    db: 'tg_assistant',
+    user: 'main',
+    password: 'main',
+  },
 };

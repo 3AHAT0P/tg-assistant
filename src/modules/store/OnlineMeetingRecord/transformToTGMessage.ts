@@ -13,6 +13,7 @@ const repeatMap = <const>{
 
 export const transformToTGMarkdownMessage = (record: OnlineMeetingRecord): string => {
   const config = inject(configInjectionToken);
+
   const date = getDateFromRecord(record).setZone(config.defaultTimezone);
   let text = sanitazeTGMessage(`ID: ${record.id}\n`)
     + `[${sanitazeTGMessage(record.name)}](${record.link})\n`

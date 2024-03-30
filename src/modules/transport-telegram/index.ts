@@ -4,6 +4,7 @@ import { DateTime, Duration } from 'luxon';
 
 import { tgBotInjectionToken, provider } from './provider';
 import { configInjectionToken } from '#module/config';
+import { sanitazeTGMessage } from './utils/sanitazeTGMessage';
 
 type NotifyUserAboutMeetingData = Pick<OnlineMeetingRecord, 'name' | 'link' | 'userId'> & {
   deltaTime: Duration;
@@ -32,7 +33,7 @@ export const notifyUserAboutMeeting = async (data: NotifyUserAboutMeetingData) =
 
   await sendMarkdownToUser(
     data.userId,
-    `Созвон через ${deltaTimeText} в ${timeString}\\.\n[${data.name}](${data.link})`
+    `Созвон через ${sanitazeTGMessage(deltaTimeText)} в ${timeString}\\.\n[${sanitazeTGMessage(data.name)}](${data.link})`
   );
 };
 

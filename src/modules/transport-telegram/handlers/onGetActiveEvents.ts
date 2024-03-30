@@ -10,6 +10,7 @@ export const registerOnGetActiveEventsHandler = (bot: TGBot): void => {
 };
 
 const onGetActiveEvents = async (context: CommandContext<Context>) => {
+  if (context.from?.id?.toString() !== '402048357') return;
   const onlineRecordsStore = inject(onlineMeetingStoreInjectionToken);
 
   const result = [];

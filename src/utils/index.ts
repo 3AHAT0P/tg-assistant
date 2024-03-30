@@ -3,3 +3,5 @@ export * from './tryToNumberOrDefault';
 export * from './throwError';
 
 export * from './transformers';
+
+export const typeKey = Symbol.for('__type__');

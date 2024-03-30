@@ -99,6 +99,8 @@ const eventMessageParser = (message: string) => {
 };
 
 const onCreateMeeting = async (context: CommandContext<Context>) => {
+  if (context.from?.id?.toString() !== '402048357') return;
+
   const store = inject(onlineMeetingStoreInjectionToken);
 
   const text = context.message?.text ?? null;
@@ -126,6 +128,5 @@ const onCreateMeeting = async (context: CommandContext<Context>) => {
 
   const record = buildOnlineMeetingRecord(data as Omit<OnlineMeetingRecord, 'id' | 'createdAt' | 'updatedAt'>);
 
-  console.log('!!!!!!!!!!!!', record);
   await store.saveRecordById(record.id, record);
 };

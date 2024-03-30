@@ -13,7 +13,7 @@ const greetingStickers = <const>[
 ];
 
 const onStart = (context: CommandContext<Context>) => {
-  console.log('Bot take start command', context.from);
+  if (context.from?.id?.toString() !== '402048357') return;
   const index: TupleIndices<typeof greetingStickers> = 0;
   context.replyWithSticker(greetingStickers[index]);
 };

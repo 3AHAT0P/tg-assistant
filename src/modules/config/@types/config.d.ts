@@ -5,4 +5,11 @@ export interface Config {
   readonly scheduleRunDelay: number;
   readonly defaultTimezone: string;
   readonly defaultLocale: string;
+  readonly postgres: {
+    host: string;
+    port: number;
+    db: string;
+    user: string;
+    password: string;
+  }
 }

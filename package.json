@@ -12,6 +12,7 @@
   "dependencies": {
     "grammy": "^1.21.1",
     "luxon": "^3.4.4",
+    "pg": "^8.11.3",
     "typescript": "^5.4.2"
   },
   "devDependencies": {

@@ -20,7 +20,7 @@ export const provider = async (): Promise<void> => {
 
   const start = () => {
     checker();
-    timer = setTimeout(checker, config.scheduleRunDelay);
+    timer = setTimeout(start, config.scheduleRunDelay);
   };
 
   const stop = () => {

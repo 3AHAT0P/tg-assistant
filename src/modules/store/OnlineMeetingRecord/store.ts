@@ -8,7 +8,7 @@ import type { OnlineMeetingRecord } from './@types/OnlineMeetingRecord';
 import type { Store } from '../@types/Store';
 import { saveResult } from '../saveResult';
 
-const storeFilePath = path.join(process.cwd(), 'data', 'OnlineMeetingStore.data.json');
+const storeFilePath = path.join(process.cwd(), 'data', 'dev', 'OnlineMeetingStore.data.json');
 
 type OnlineMeetingStore = Map<string, OnlineMeetingRecord>;
 
@@ -21,6 +21,18 @@ const getRecordById = async (
 
   return Promise.resolve(result);
 };
+
+// const getListRecord = async (
+//   store: OnlineMeetingStore,
+//   filter?: {
+//     userId?: string;
+//   },
+// ): Promise<IterableIterator<OnlineMeetingRecord>> => {
+
+//   store.values();
+
+//   return Promise.resolve();
+// };
 
 const getAllRecord = async (
   store: OnlineMeetingStore,

@@ -65,6 +65,8 @@ export const checker = async (): Promise<void> => {
       deltaTimeAsMilliseconds = deltaTime.as('milliseconds');
     }
 
+    console.log(record.name, deltaTimeAsMilliseconds, config.scheduleRunDelay * 2);
+
     if (deltaTimeAsMilliseconds >= 0 && deltaTimeAsMilliseconds <= config.scheduleRunDelay * 2) {
       await notifyUserAboutMeeting({
         name: record.name,

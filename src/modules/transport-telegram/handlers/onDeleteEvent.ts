@@ -11,6 +11,7 @@ export const registerOnDeleteEventHandler = (bot: TGBot): void => {
 };
 
 const onDeleteEvent = async (context: CommandContext<Context>) => {
+  if (context.from?.id?.toString() !== '402048357') return;
   const onlineRecordsStore = inject(onlineMeetingStoreInjectionToken);
 
   const id = context.message?.text.split(' ')[1];
