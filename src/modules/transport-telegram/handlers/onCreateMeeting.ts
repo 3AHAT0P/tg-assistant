@@ -3,26 +3,22 @@ import { DateTime } from 'luxon';
 
 import { inject } from '#lib/DI';
 import {
-  type OnlineMeetingRecord,
-  getDateFromSchedule,
-} from '#module/store/OnlineMeetingRecord';
-import {
   isHours, isMinutes, isMonthDayIndex, isMonthIndex, isNullOrUndefined, isWeekDayIndex, isWeekIndex,
   tryToNumberOrDefault, validateNumberOrDefault,
 } from '#utils';
 import { UserNotFoundError } from '#utils/errors';
 
+import { configInjectionToken } from '#module/config';
 import { EventRepositoryInjectionToken } from '#module/store/PostgresStorage/EventModel';
 
 import type { TGBot, TGBotContext } from '../@types';
 import { getAuthorizedUserMiddleware } from '../middlewares';
-import { configInjectionToken } from '#module/config';
 
 export const registerOnCreateMeetingHandler = (bot: TGBot): void => {
   bot.command('create_event', onCreateMeeting);
 };
 
-const validateRepeat = (value: string | null): value is OnlineMeetingRecord['repeat'] => {
+const validateRepeat = (value: string | null): value is 'workdays' | 'weekly' | 'monthly' | null => {
   if (value === null) return true;
   return ['workdays', 'weekly', 'monthly'].includes(value);
 };
@@ -31,7 +27,17 @@ const regexpDate = /y?(\d{4})?M?(\d{1,2})?d?(\d{1,2})?h?(\d{1,2})?m?(\d{1,2})?/;
 const regexpWeek = /y?(\d{4})?w?(\d{1,2})?d?(\d{1,2})?h?(\d{1,2})?m?(\d{1,2})?/;
 
 const eventMessageParser = (message: string, timezone: string) => {
-  const result: Partial<OnlineMeetingRecord> = {};
+  const result: {
+    name: string | null;
+    link: string | null;
+    repeat: 'workdays' | 'weekly'| 'monthly' | null;
+    startAt: Date | null;
+  } = {
+    name: null,
+    link: null,
+    repeat: null,
+    startAt: null,
+  };
   const lines = message.split('\n');
   for (const line of lines) {
     const [key, value, ...other] = line.split(':').map((part) => part.trim());
@@ -63,15 +69,14 @@ const eventMessageParser = (message: string, timezone: string) => {
           minuteString = ''
         ] = value.match(regexpDate) ?? [];
 
-        result.schedule = {
-          date: {
-            year: tryToNumberOrDefault(yearString, currentDate.year),
-            month: validateNumberOrDefault(monthString, isMonthIndex, currentDate.month),
-            day: validateNumberOrDefault(dayString, isMonthDayIndex, currentDate.day),
-            hour: validateNumberOrDefault(hourString, isHours, currentDate.hour),
-            minute: validateNumberOrDefault(minuteString, isMinutes, currentDate.minute),
-          },
-        };
+        currentDate = currentDate.set({
+          year: tryToNumberOrDefault(yearString, currentDate.year),
+          month: validateNumberOrDefault(monthString, isMonthIndex, currentDate.month),
+          day: validateNumberOrDefault(dayString, isMonthDayIndex, currentDate.day),
+          hour: validateNumberOrDefault(hourString, isHours, currentDate.hour),
+          minute: validateNumberOrDefault(minuteString, isMinutes, 0),
+        });
+        result.startAt = currentDate.toJSDate();
 
         break;
       }
@@ -86,22 +91,21 @@ const eventMessageParser = (message: string, timezone: string) => {
           minuteString = ''
         ] = value.match(regexpWeek) ?? [];
 
-        result.schedule = {
-          week: {
-            year: tryToNumberOrDefault(yearString, currentDate.year),
-            weekNumber: validateNumberOrDefault(weekString, isWeekIndex, currentDate.weekNumber),
-            day: validateNumberOrDefault(dayString, isWeekDayIndex, currentDate.weekday),
-            hour: validateNumberOrDefault(hourString, isHours, currentDate.hour),
-            minute: validateNumberOrDefault(minuteString, isMinutes, 0),
-          },
-        };
+        currentDate = currentDate.set({
+          weekYear: tryToNumberOrDefault(yearString, currentDate.year),
+          weekNumber: validateNumberOrDefault(weekString, isWeekIndex, currentDate.weekNumber),
+          weekday: validateNumberOrDefault(dayString, isWeekDayIndex, currentDate.weekday),
+          hour: validateNumberOrDefault(hourString, isHours, currentDate.hour),
+          minute: validateNumberOrDefault(minuteString, isMinutes, 0),
+        });
+        result.startAt = currentDate.toJSDate();
         break;
       }
       default:
         break;
     }
   }
-  return result as Pick<OnlineMeetingRecord, 'name' | 'link' | 'schedule' | 'repeat'>;
+  return result;
 };
 
 const onCreateMeeting = async (context: CommandContext<TGBotContext>) => {
@@ -123,7 +127,7 @@ const onCreateMeeting = async (context: CommandContext<TGBotContext>) => {
   if (
     isNullOrUndefined(data.name)
     || isNullOrUndefined(data.link)
-    || isNullOrUndefined(data.schedule)
+    || isNullOrUndefined(data.startAt)
   ) {
     context.reply('Incorrect message.');
     return;
@@ -135,12 +139,10 @@ const onCreateMeeting = async (context: CommandContext<TGBotContext>) => {
     const event = await eventRepository.createOne({
       name: data.name,
       link: data.link,
-      startAt: getDateFromSchedule(data.schedule, config.defaultTimezone).toJSDate(),
+      startAt: data.startAt,
       repeat: data.repeat,
       userId: user.id,
     });
-
-    console.log('event', event);
 
     if (event === null) {
       context.reply('Error!');
