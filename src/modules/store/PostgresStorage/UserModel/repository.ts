@@ -6,6 +6,7 @@ import { PostgresConnectionInjectionToken } from '../provider';
 
 import { tableName } from './tableName';
 import { UserModel } from './@types';
+import { typeKey } from '#utils';
 
 const getAll = async (connection: Pool): Promise<UserModel[]> => {
   const sql = `
@@ -14,7 +15,7 @@ const getAll = async (connection: Pool): Promise<UserModel[]> => {
     last_name as "lastName",
     tg_id as "tgId",
     created_at as "createdAt",
-    updated_at as "updatedAt",
+    updated_at as "updatedAt"
   FROM ${tableName}`;
 
   const values: never[] = [];
@@ -31,7 +32,7 @@ const findById = async (connection: Pool, id: UserModel['id']): Promise<UserMode
     last_name as "lastName",
     tg_id as "tgId",
     created_at as "createdAt",
-    updated_at as "updatedAt",
+    updated_at as "updatedAt"
   FROM ${tableName}
   WHERE id=$1
   LIMIT 1`;
@@ -50,7 +51,7 @@ const findByTGId = async (connection: Pool, tgId: UserModel['tgId']): Promise<Us
     last_name as "lastName",
     tg_id as "tgId",
     created_at as "createdAt",
-    updated_at as "updatedAt",
+    updated_at as "updatedAt"
   FROM ${tableName}
   WHERE tg_id=$1
   LIMIT 1`;
@@ -101,11 +102,11 @@ const deleteById = async (connection: Pool, id: UserModel['id']): Promise<void> 
   await connection.query({ text: sql, values });
 };
 
-export const getUserRepository = async () => {
+export const getUserRepository = () => {
   const pgConnection = inject(PostgresConnectionInjectionToken);
 
   return <const>{
-    [Symbol.for('[[type]]')]: 'UserRepository',
+    [typeKey]: 'UserRepository',
     getAll: getAll.bind(null, pgConnection),
     findById: findById.bind(null, pgConnection),
     findByTGId: findByTGId.bind(null, pgConnection),

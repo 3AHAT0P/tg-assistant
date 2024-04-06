@@ -7,8 +7,8 @@ const sqlUp = `CREATE TABLE ${tableName} (
   first_name varchar(255) NOT NULL,
   last_name varchar(255) NULL,
   tg_id varchar(12) NOT NULL,
-  created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
+  created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 );`;
 
 const sqlDown = `DROP TABLE ${tableName}`;

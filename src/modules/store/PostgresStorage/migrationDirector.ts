@@ -18,6 +18,13 @@ const migrationList: MigrationList = [
   return 0;
 });
 
+/**
+ * Checks if a table exists in the database.
+ *
+ * @param {Pool} connection - the database connection pool
+ * @param {string} tableName - the name of the table to check
+ * @return {Promise<boolean>} whether the table exists or not
+ */
 const tableIsExists = async (connection: Pool, tableName: string): Promise<boolean> => {
   const sql = 'SELECT table_name FROM information_schema.tables WHERE table_name = $1';
 
@@ -31,6 +38,12 @@ const tableIsExists = async (connection: Pool, tableName: string): Promise<boole
   return res.rows.length > 0;
 };
 
+/**
+ * Asynchronously migrates the database using the provided connection pool. 
+ *
+ * @param {Pool} connection - the connection pool for the database
+ * @return {Promise<void>} a promise that resolves when the migration is complete
+ */
 export const migrate = async (connection: Pool): Promise<void> => {
   if (!(await tableIsExists(connection, migrationTableName))) await createMigrationsTable.up(connection);
 
@@ -43,13 +56,19 @@ export const migrate = async (connection: Pool): Promise<void> => {
   for (const [name, runner] of migrationList) {
     if (name in executedMigrations) continue;
 
-    console.log(name);
     await runner.up(connection);
 
     await createExectutedMigration(connection, name);
   }
 };
 
+/**
+ * Rolls back a specified number of executed migrations in the database.
+ *
+ * @param {Pool} connection - The database connection pool.
+ * @param {number} count - The number of migrations to roll back.
+ * @return {Promise<string[]>} An array of names of rolled back migrations.
+ */
 export const rollback = async (connection: Pool, count: number): Promise<string[]> => {
   if (!(await tableIsExists(connection, migrationTableName))) return [];
 
@@ -60,7 +79,9 @@ export const rollback = async (connection: Pool, count: number): Promise<string[
     const migration = migrationList.find((record) => record[0] === name);
     if (isNullOrUndefined(migration)) continue;
     
-    await migration[1].down(connection);
+    const migrationRunner = migration[1];
+
+    await migrationRunner.down(connection);
 
     await deleteExectutedMigration(connection, name);
     result.push(name);

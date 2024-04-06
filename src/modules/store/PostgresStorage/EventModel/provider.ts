@@ -1,17 +1,17 @@
 import { InjectionToken, provide } from '#lib/DI';
 import { typeKey } from '#utils';
 
-import { type UserRepository, getUserRepository } from './repository';
+import { type EventRepository, getEventRepository } from './repository';
 
-export const UserRepositoryInjectionToken: InjectionToken<UserRepository> = {
-  id: Symbol('UserRepository'),
-  guard(value: unknown): value is UserRepository {
-    return typeof value === 'object' && value != null && typeKey in value && value[typeKey] === 'UserRepository';
+export const EventRepositoryInjectionToken: InjectionToken<EventRepository> = {
+  id: Symbol('EventRepository'),
+  guard(value: unknown): value is EventRepository {
+    return typeof value === 'object' && value != null && typeKey in value && value[typeKey] === 'EventRepository';
   },
 };
 
 export const provider = async (): Promise<void> => {
-  const repository = getUserRepository();
+  const repository = getEventRepository();
 
-  provide(UserRepositoryInjectionToken, repository);
+  provide(EventRepositoryInjectionToken, repository);
 };

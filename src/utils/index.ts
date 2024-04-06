@@ -4,4 +4,4 @@ export * from './throwError';
 
 export * from './transformers';
 
-export const typeKey = Symbol.for('__type__');
+export const typeKey = Symbol.for('[[type]]');

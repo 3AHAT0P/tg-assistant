@@ -1,3 +1,5 @@
 import { Api, Bot, Context, RawApi } from 'grammy';
 
-export type TGBot = Bot<Context, Api<RawApi>>;
+export type TGBotContext = Context;
+
+export type TGBot = Bot<TGBotContext, Api<RawApi>>;

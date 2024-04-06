@@ -1,37 +1,49 @@
-import { CommandContext, Context } from 'grammy';
+import { CommandContext } from 'grammy';
 
 import { inject } from '#lib/DI';
 import { isNullOrUndefined } from '#utils';
-import { onlineMeetingStoreInjectionToken, transformToTGMarkdownMessage } from '#module/store/OnlineMeetingRecord';
+import { UserNotFoundError } from '#utils/errors';
+import { EventRepositoryInjectionToken, transformToTGMarkdownMessage } from '#module/store/PostgresStorage/EventModel';
 
-import { TGBot } from '../@types';
+import { TGBot, TGBotContext } from '../@types';
+import { getAuthorizedUserMiddleware } from '../middlewares';
 
 export const registerOnDeleteEventHandler = (bot: TGBot): void => {
   bot.command('delete_event', onDeleteEvent);
 };
 
-const onDeleteEvent = async (context: CommandContext<Context>) => {
-  if (context.from?.id?.toString() !== '402048357') return;
-  const onlineRecordsStore = inject(onlineMeetingStoreInjectionToken);
+const onDeleteEvent = async (context: CommandContext<TGBotContext>) => {
+  const user = await getAuthorizedUserMiddleware(context);
+  if (user instanceof UserNotFoundError) {
+    context.reply('Unauthorized.');
+    return;
+  }
 
-  const id = context.message?.text.split(' ')[1];
+  const text = context.message?.text ?? null;
+  if (text === null) {
+    context.reply('Incorrect message.');
+    return;
+  }
+
+  const eventRepository = inject(EventRepositoryInjectionToken);
+
+  const id = text.split(' ')[1];
 
   if (isNullOrUndefined(id)) {
     context.reply('Невалидный id события!');
     return;
   }
 
-  const record = await onlineRecordsStore.getRecordById(id);
+  const record = await eventRepository.deleteById(id);
 
   if (record === null) {
     context.reply('Невалидный id события!');
     return;
   }
 
-  await onlineRecordsStore.deleteRecordById(id);
-
   context.reply(
     `Следующие событие было удалено:\n${transformToTGMarkdownMessage(record)}`,
     { parse_mode: 'MarkdownV2' },
   );
 };
+

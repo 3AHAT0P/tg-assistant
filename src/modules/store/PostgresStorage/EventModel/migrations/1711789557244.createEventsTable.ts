@@ -9,11 +9,11 @@ CREATE TABLE ${tableName} (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   name varchar(255) NOT NULL,
   link text NOT NULL,
-  start_at timestamp without time zone NOT NULL,
+  start_at timestamp with time zone NOT NULL,
   repeat event_repeat_type NULL,
   user_id uuid NOT NULL REFERENCES users (id),
-  created_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
+  created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 );`;
 
 const sqlDown = `

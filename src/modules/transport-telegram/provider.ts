@@ -8,6 +8,7 @@ import { registerOnStartHandler } from './handlers/onStart';
 import { registerOnCreateMeetingHandler } from './handlers/onCreateMeeting';
 import { registerOnGetActiveEventsHandler } from './handlers/onGetActiveEvents';
 import { registerOnDeleteEventHandler } from './handlers/onDeleteEvent';
+import { registerOnGetEventsHandler } from './handlers/onGetEvents';
 
 export const tgBotInjectionToken: InjectionToken<TGBot> = {
   id: Symbol('TGBot'),
@@ -28,4 +29,5 @@ export const provider = async (): Promise<void> => {
   registerOnCreateMeetingHandler(bot);
   registerOnGetActiveEventsHandler(bot);
   registerOnDeleteEventHandler(bot);
+  registerOnGetEventsHandler(bot);
 };
