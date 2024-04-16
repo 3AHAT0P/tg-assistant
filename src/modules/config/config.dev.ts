@@ -1,4 +1,4 @@
-import { stringToString, throwError } from '#utils';
+import { stringToNumber, stringToString, throwError } from '#utils';
 
 import { Config } from './@types';
 
@@ -15,5 +15,13 @@ export const config: Config = <const>{
     db: 'tg_assistant',
     user: 'main',
     password: 'main',
+    runMigrations: true,
+    rollbackMigrations: 0,
+  },
+  self: {
+    host: stringToString(process.env['SELF_HOST']) ?? 'http://localhost',
+    port: stringToNumber(process.env['SELF_PORT']) ?? 3001,
+    publicHost: stringToString(process.env['SELF_PUBLIC_HOST']) ?? 'http://cucumber.loc',
+    publicPort: stringToNumber(process.env['SELF_PUBLIC_PORT']) ?? 3001,
   },
 };

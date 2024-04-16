@@ -11,5 +11,13 @@ export interface Config {
     db: string;
     user: string;
     password: string;
-  }
+    runMigrations: boolean;
+    rollbackMigrations: number;
+  };
+  readonly self: {
+    readonly host: string;
+    readonly port: number;
+    readonly publicHost: string;
+    readonly publicPort: number | null;
+  };
 }

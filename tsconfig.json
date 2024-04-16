@@ -9,6 +9,8 @@
       "node"
     ],
     "baseUrl": "./",
+    "outDir": "./dist",
+    "target": "ESNext",
     "preserveConstEnums": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

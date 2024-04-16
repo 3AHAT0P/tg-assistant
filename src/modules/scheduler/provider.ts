@@ -28,7 +28,7 @@ export const provider = async (): Promise<void> => {
     clearTimeout(timer);
   };
 
-  // start();
+  start();
 
   provide(schedulerInjectionToken, { stop });
 };

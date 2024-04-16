@@ -15,5 +15,13 @@ export const config: Config = <const>{
     db: stringToString(process.env['POSTGRES_DB']) ?? 'tg_assistant',
     user: stringToString(process.env['POSTGRES_USER']) ?? throwError('Environment variable POSTGRES_USER is required!'),
     password: stringToString(process.env['POSTGRES_PASSWORD']) ?? throwError('Environment variable POSTGRES_PASSWORD is required!'),
+    runMigrations: stringToBoolean(process.env['POSTGRES_RUN_MIGRATIONS']) ?? true,
+    rollbackMigrations: stringToNumber(process.env['POSTGRES_ROLLBACK_MIGRATIONS']) ?? 0,
+  },
+  self: {
+    host: stringToString(process.env['SELF_HOST']) ?? 'http://localhost',
+    port: stringToNumber(process.env['SELF_PORT']) ?? 3001,
+    publicHost: stringToString(process.env['SELF_PUBLIC_HOST']) ?? throwError('Environment variable SELF_PUBLIC_HOST is required!'),
+    publicPort: stringToNumber(process.env['SELF_PUBLIC_PORT']) ?? null,
   },
 };

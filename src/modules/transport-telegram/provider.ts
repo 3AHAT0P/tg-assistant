@@ -9,6 +9,7 @@ import { registerOnCreateMeetingHandler } from './handlers/onCreateMeeting';
 import { registerOnGetActiveEventsHandler } from './handlers/onGetActiveEvents';
 import { registerOnDeleteEventHandler } from './handlers/onDeleteEvent';
 import { registerOnGetEventsHandler } from './handlers/onGetEvents';
+import { loggerInjectionToken } from '#module/logger';
 
 export const tgBotInjectionToken: InjectionToken<TGBot> = {
   id: Symbol('TGBot'),
@@ -25,9 +26,18 @@ export const provider = async (): Promise<void> => {
 
   provide(tgBotInjectionToken, bot);
 
+  // DEBUG
+  // bot.on('message', (ctx, next) => {
+  //   console.log(ctx.message);
+  //   next();
+  // });
+
   registerOnStartHandler(bot);
   registerOnCreateMeetingHandler(bot);
   registerOnGetActiveEventsHandler(bot);
   registerOnDeleteEventHandler(bot);
   registerOnGetEventsHandler(bot);
+
+  const logger = inject(loggerInjectionToken);
+  logger.info(['Transport Telegram', 'provider'], 'Bot is started!');
 };

@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "tsx watch --env-file=.env --ignore=./data/* ./src/index.ts",
+    "build": "tsc",
+    "prod:start": "TS_NODE_BASEURL=./dist node -r tsconfig-paths/register ./dist/src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -13,6 +15,7 @@
     "grammy": "^1.21.1",
     "luxon": "^3.4.4",
     "pg": "^8.11.3",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.2"
   },
   "devDependencies": {

@@ -122,7 +122,7 @@ const onCreateMeeting = async (context: CommandContext<TGBotContext>) => {
   }
 
   const config = inject(configInjectionToken);
-  const data = eventMessageParser(text, config.defaultTimezone);
+  const data = eventMessageParser(text, user.timezone ?? config.defaultTimezone);
 
   if (
     isNullOrUndefined(data.name)
@@ -131,6 +131,19 @@ const onCreateMeeting = async (context: CommandContext<TGBotContext>) => {
   ) {
     context.reply('Incorrect message.');
     return;
+  }
+
+  if (data.link.includes('zoom.us/j/')) {
+    const result = data.link.match(/zoom\.us\/j\/(?<roomId>\d+).*(pwd=(?<password>[\w\d]+))/);
+    const roomId = result?.groups?.['roomId'] ?? '';
+    const password = result?.groups?.['password'] ?? '';
+    if (roomId !== '') {
+      data.link = config.self.publicHost;
+      if (config.self.publicPort !== null) data.link += `:${config.self.publicPort}`;
+      data.link += `/zoom/join/${roomId}`;
+
+      if (password !== '') data.link += `?pwd=${password}`;
+    }
   }
 
   const eventRepository = inject(EventRepositoryInjectionToken);

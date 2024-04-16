@@ -2,19 +2,21 @@ import { stringToBoolean } from '#utils';
 
 import type { Config } from './@types';
 
+// @TODO(ikos) Code too much complexity. Refactor it!
 export const loader = async (): Promise<Config> => {
   const isProdMode = stringToBoolean(process.env['IS_PROD_MODE']) ?? false;
+  const isCompiled = stringToBoolean(process.env['IS_COMPILED']) ?? true;
 
-  // @ts-expect-error file may be except
-  if (isProdMode) return (await import('./config.prod')).config;
+  const configProdFilePath = `./config.prod.${isCompiled ? 'js' : 'ts'}`;
+  const configDevFilePath = `./config.dev.${isCompiled ? 'js' : 'ts'}`;
+
+  if (isProdMode) return (await import(configProdFilePath)).config;
 
   try {
-    // @ts-expect-error file may be except
-    return (await import('./config.dev')).config;
+    return (await import(configDevFilePath)).config;
   } catch (error) {
     console.log(error);
-    // @ts-expect-error file may be except
-    return (await import('./config.prod')).config;
+    return (await import(configProdFilePath)).config;
   }
 };
 

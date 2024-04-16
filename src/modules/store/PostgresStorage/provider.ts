@@ -1,5 +1,7 @@
-import { InjectionToken, provide } from '#lib/DI';
 import { Pool } from 'pg';
+
+import { InjectionToken, inject, provide } from '#lib/DI';
+import { configInjectionToken } from '#module/config';
 
 import { buildConnection } from './buildConnection';
 import { migrate, rollback } from './migrationDirector';
@@ -13,10 +15,12 @@ export const PostgresConnectionInjectionToken: InjectionToken<Pool> = {
 
 export const provider = async (): Promise<void> => {
   const pool = await buildConnection();
+  const config = inject(configInjectionToken);
 
-  await migrate(pool);
+  if (config.postgres.runMigrations) await migrate(pool);
 
-  // await rollback(pool, 1);
+  if (config.postgres.rollbackMigrations > 0) await rollback(pool, config.postgres.rollbackMigrations);
 
   provide(PostgresConnectionInjectionToken, pool);
 };
+

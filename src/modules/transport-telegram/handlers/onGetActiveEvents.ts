@@ -1,6 +1,7 @@
 import { CommandContext } from 'grammy';
 
 import { inject } from '#lib/DI';
+import { configInjectionToken } from '#module/config';
 import { EventRepositoryInjectionToken, transformToTGMarkdownMessage } from '#module/store/PostgresStorage/EventModel';
 import { UserNotFoundError } from '#utils/errors/UserNotFoundError';
 
@@ -22,8 +23,10 @@ const onGetActiveEvents = async (context: CommandContext<TGBotContext>) => {
   const eventRepository = inject(EventRepositoryInjectionToken);
   const result = [];
 
+  const config = inject(configInjectionToken);
+
   for (const record of await eventRepository.getAll({ userId: user.id, startAt: new Date() })) {
-    result.push(transformToTGMarkdownMessage(record));
+    result.push(transformToTGMarkdownMessage(record, user.timezone ?? config.defaultTimezone));
   }
 
   context.reply(result.join(`\n${'\\-'.repeat(9)}\n`), { parse_mode: 'MarkdownV2' });

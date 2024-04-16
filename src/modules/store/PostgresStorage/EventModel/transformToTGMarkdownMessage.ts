@@ -1,8 +1,6 @@
 import { DateTime } from 'luxon';
 
-import { inject } from '#lib/DI';
 import { sanitazeTGMessage } from '#module/transport-telegram/utils/sanitazeTGMessage';
-import { configInjectionToken } from '#module/config';
 
 import { EventModel } from './@types';
 
@@ -12,10 +10,8 @@ const repeatMap = <const>{
   monthly: 'Ежемесячно',
 };
 
-export const transformToTGMarkdownMessage = (record: EventModel): string => {
-  const config = inject(configInjectionToken);
-
-  const date = DateTime.fromJSDate(record.startAt).setZone(config.defaultTimezone);
+export const transformToTGMarkdownMessage = (record: EventModel, timezone: string): string => {
+  const date = DateTime.fromJSDate(record.startAt).setZone(timezone);
   let text = sanitazeTGMessage(`ID: ${record.id}\n`)
     + `[${sanitazeTGMessage(record.name)}](${record.link})\n`
     + `С ${sanitazeTGMessage(date.toFormat('dd-MM-yyyy HH:mm \'(GMT+3)\''))}`;

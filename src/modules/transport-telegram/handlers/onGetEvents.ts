@@ -2,6 +2,7 @@ import { CommandContext } from 'grammy';
 import { DateTime } from 'luxon';
 
 import { inject } from '#lib/DI';
+import { configInjectionToken } from '#module/config';
 import { EventRepositoryInjectionToken, transformToTGMarkdownMessage } from '#module/store/PostgresStorage/EventModel';
 import { UserNotFoundError } from '#utils/errors/UserNotFoundError';
 
@@ -28,7 +29,7 @@ const onGetEvents = async (context: CommandContext<TGBotContext>) => {
 
   const eventRepository = inject(EventRepositoryInjectionToken);
 
-  const range = text.split(' ')[1] ?? 'day'; 
+  const range = text.split(' ')[1] ?? 'day';
 
   const result = [];
 
@@ -50,9 +51,14 @@ const onGetEvents = async (context: CommandContext<TGBotContext>) => {
     }
   }
 
-  for (const record of await eventRepository.getAll({ userId: user.id, startAt: dateRange })) {
-    result.push(transformToTGMarkdownMessage(record));
-  }
+  const config = inject(configInjectionToken);
 
+  for (const record of await eventRepository.getAll({ userId: user.id, startAt: dateRange })) {
+    result.push(transformToTGMarkdownMessage(record, user.timezone ?? config.defaultTimezone));
+  }
+  if (result.length === 0) {
+    context.reply('List is Empty!');
+    return;
+  }
   context.reply(result.join(`\n${'\\-'.repeat(9)}\n`), { parse_mode: 'MarkdownV2' });
 };

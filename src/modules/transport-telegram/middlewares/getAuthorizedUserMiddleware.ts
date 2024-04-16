@@ -11,7 +11,7 @@ export const getAuthorizedUserMiddleware = async (context: TGBotContext): Promis
 
   const userRepository = inject(UserRepositoryInjectionToken);
 
-  const user = await userRepository.findByTGId(userTGId);
+  const user = await userRepository.findByTGId({ tgId: userTGId, isEnabled: true });
   if (user === null) return new UserNotFoundError();
 
   return user;

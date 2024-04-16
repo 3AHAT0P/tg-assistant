@@ -1,13 +1,12 @@
 import { Pool, escapeIdentifier, escapeLiteral } from 'pg';
 
 import { inject } from '#lib/DI';
+import { isNullOrUndefined, typeKey } from '#utils';
 
 import { PostgresConnectionInjectionToken } from '../provider';
 
 import { tableName } from './tableName';
 import { EventModel } from './@types';
-import { configInjectionToken } from '#module/config';
-import { isNullOrUndefined, typeKey } from '#utils';
 
 export type EventModelQueryConditions<T extends object = object> = {
   userId?: EventModel['userId'];
@@ -62,7 +61,7 @@ const getAll = async (
   let sql = `
     SELECT ${query.select.join(', ')}
     FROM ${query.from}`;
-  
+
   if (query.where.length > 0) sql += `\nWHERE ${query.where.join(' and ')}`;
   if (query.orderBy.length > 0) sql += `\nORDER BY ${query.orderBy.join(', ')}`;
 
@@ -101,7 +100,7 @@ const getCloseToTime = async (
   conditions: EventModelQueryConditions<{ datetime: Date, range: [number, number] }>,
 ): Promise<EventModel[]> => {
   const escapedDateTime = escapeLiteral(conditions.datetime.toISOString());
-  const escapedMinTimeRange = conditions.range[0]; 
+  const escapedMinTimeRange = conditions.range[0];
   const escapedMaxTimeRange = conditions.range[1];
 
   const query = {
@@ -144,7 +143,7 @@ const createOne = async (
     values.push(value);
     index += 1;
   }
-  
+
   const sql = `INSERT INTO ${tableName}
   (${ columns.join(', ')})
   VALUES (${valuesIndexes.join(', ')})

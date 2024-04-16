@@ -3,6 +3,7 @@ import { CommandContext } from 'grammy';
 import { inject } from '#lib/DI';
 import { isNullOrUndefined } from '#utils';
 import { UserNotFoundError } from '#utils/errors';
+import { configInjectionToken } from '#module/config';
 import { EventRepositoryInjectionToken, transformToTGMarkdownMessage } from '#module/store/PostgresStorage/EventModel';
 
 import { TGBot, TGBotContext } from '../@types';
@@ -41,8 +42,10 @@ const onDeleteEvent = async (context: CommandContext<TGBotContext>) => {
     return;
   }
 
+  const config = inject(configInjectionToken);
+
   context.reply(
-    `Следующие событие было удалено:\n${transformToTGMarkdownMessage(record)}`,
+    `Следующие событие было удалено:\n${transformToTGMarkdownMessage(record, user.timezone ?? config.defaultTimezone)}`,
     { parse_mode: 'MarkdownV2' },
   );
 };
